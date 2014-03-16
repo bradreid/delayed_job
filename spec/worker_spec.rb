@@ -34,6 +34,19 @@ describe Delayed::Worker do
     end
   end
 
+  context 'max jobs' do
+    it "should reserve 1 job" do
+      worker = Delayed::Worker.new max_jobs: 1
+      worker.should_receive(:reserve_and_run_one_job).and_return true
+      worker.work_off
+    end
+    it "should reserve 3 jobs" do
+      worker = Delayed::Worker.new max_jobs: 3
+      worker.should_receive(:reserve_and_run_one_job).exactly(3).and_return true
+      worker.work_off
+    end
+  end
+
   context "worker read-ahead" do
     before do
       @read_ahead = Delayed::Worker.read_ahead

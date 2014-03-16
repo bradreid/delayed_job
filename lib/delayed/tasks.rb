@@ -10,8 +10,8 @@ namespace :jobs do
   end
 
   desc "Start a delayed_job worker and exit when all available jobs are complete."
-  task :workoff => :environment_options do
-    Delayed::Worker.new(@worker_options.merge({:exit_on_complete => true})).start
+  task workoff, [:max_jobs] => :environment_options do |t, args|
+    Delayed::Worker.new(@worker_options.merge({:exit_on_complete => true, max_jobs: args[:max_jobs]})).start
   end
 
   task :environment_options => :environment do

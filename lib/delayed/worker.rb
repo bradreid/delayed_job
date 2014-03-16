@@ -107,6 +107,10 @@ module Delayed
 
     def initialize(options={})
       @quiet = options.has_key?(:quiet) ? options[:quiet] : true
+      if options[:max_jobs]
+        @max_jobs = options[:max_jobs]
+        @limit_jobs = true
+      end
       @failed_reserve_count = 0
 
       [:min_priority, :max_priority, :sleep_delay, :read_ahead, :queues, :exit_on_complete].each do |option|
@@ -151,6 +155,7 @@ module Delayed
           self.class.lifecycle.run_callbacks(:loop, self) do
             @realtime = Benchmark.realtime do
               @result = work_off
+              stop if @limit_jobs
             end
           end
 
@@ -182,7 +187,7 @@ module Delayed
 
     # Do num jobs and return stats on success/failure.
     # Exit early if interrupted.
-    def work_off(num = 100)
+    def work_off(num = (@max_jobs || 100))
       success, failure = 0, 0
 
       num.times do
