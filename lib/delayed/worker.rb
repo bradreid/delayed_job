@@ -108,7 +108,7 @@ module Delayed
     def initialize(options={})
       @quiet = options.has_key?(:quiet) ? options[:quiet] : true
       if options[:max_jobs]
-        @max_jobs = options[:max_jobs]
+        @max_jobs = options[:max_jobs].to_i
         @limit_jobs = true
       end
       @failed_reserve_count = 0
