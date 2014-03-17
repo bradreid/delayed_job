@@ -199,6 +199,7 @@ module Delayed
         else
           break  # leave if no work could be done
         end
+        sleep(self.class.sleep_delay)
         break if stop? # leave if we're exiting
       end
 
