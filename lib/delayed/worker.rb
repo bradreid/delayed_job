@@ -191,6 +191,7 @@ module Delayed
       success, failure = 0, 0
 
       num.times do
+        sleep(self.class.sleep_delay)
         case reserve_and_run_one_job
         when true
             success += 1
@@ -199,7 +200,6 @@ module Delayed
         else
           break  # leave if no work could be done
         end
-        sleep(self.class.sleep_delay)
         break if stop? # leave if we're exiting
       end
 
